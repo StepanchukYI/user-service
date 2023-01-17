@@ -1,4 +1,4 @@
-BIN_NAME := $(or $(PROJECT_NAME),'default-template')
+BIN_NAME := $(or $(PROJECT_NAME),'user-service')
 PKG_PATH := $(or $(PKG),'.')
 PKG_LIST := $(shell go list ${PKG_PATH}/... | grep -v /vendor/)
 GOLINT := golangci-lint

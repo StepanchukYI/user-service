@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"time"
 
-	"stepanchuk/default-template/config"
+	"github.com/StepanchukYI/user-service/config"
 )
 
 var ErrServiceNotReady = errors.New("wss service: not started yet")

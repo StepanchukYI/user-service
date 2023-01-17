@@ -1,7 +1,7 @@
 package config
 
 import (
-	"stepanchuk/default-template/config/reader"
+	"github.com/StepanchukYI/user-service/config/reader"
 )
 
 func Read() (Config, error) {

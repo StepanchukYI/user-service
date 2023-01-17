@@ -10,10 +10,10 @@ import (
 	log "github.com/sirupsen/logrus"
 	"go.uber.org/fx"
 
-	"stepanchuk/default-template/config"
-	healthServer "stepanchuk/default-template/server/healthcheck"
-	httpServer "stepanchuk/default-template/server/http"
-	wssServer "stepanchuk/default-template/server/socket"
+	"github.com/StepanchukYI/user-service/config"
+	healthServer "github.com/StepanchukYI/user-service/server/healthcheck"
+	httpServer "github.com/StepanchukYI/user-service/server/http"
+	wssServer "github.com/StepanchukYI/user-service/server/socket"
 )
 
 func main() {

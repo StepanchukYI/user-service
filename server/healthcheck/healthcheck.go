@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"stepanchuk/default-template/config"
+	"github.com/StepanchukYI/user-service/config"
 )
 
 type Server struct {
