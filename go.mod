@@ -4,11 +4,13 @@ go 1.19
 
 require (
 	github.com/google/uuid v1.3.0
+	github.com/lib/pq v1.10.7
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/viper v1.14.0
 	github.com/stretchr/testify v1.8.1
 	go.uber.org/fx v1.19.1
+	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e
 )
 
 require (

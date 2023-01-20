@@ -4,9 +4,8 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
 )
-
-type Identity uint
 
 type UserStatus int8
 
@@ -19,22 +18,32 @@ const (
 )
 
 type User struct {
-	Id         uuid.UUID
+	Id uuid.UUID
 
-	Email string
+	Email    string
+	Password []byte
 
 	Status UserStatus
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
-
-
 }
 
-type UserProfile struct {
+func (u *User) CreatePassword(password string) error {
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+
+	u.Password = hash
+	return nil
+}
+
+type UserProfiles struct {
+	Id uuid.UUID
+
 	UserId uuid.UUID
 
 	Name       string
 	SecondName string
-
 }
