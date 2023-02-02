@@ -2,8 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
-	"net"
 	"os"
 	"strings"
 
@@ -11,9 +9,9 @@ import (
 	"go.uber.org/fx"
 
 	"github.com/StepanchukYI/user-service/config"
-	healthServer "github.com/StepanchukYI/user-service/server/healthcheck"
 	httpServer "github.com/StepanchukYI/user-service/server/http"
 	wssServer "github.com/StepanchukYI/user-service/server/socket"
+	statusServer "github.com/StepanchukYI/user-service/server/statuscheck"
 )
 
 func main() {
@@ -31,7 +29,7 @@ func main() {
 		),
 
 		fx.Invoke(
-			func(*healthServer.Server) {},
+			func(*statusServer.Server) {},
 			func(*httpServer.Server) {},
 			func(*wssServer.Server) {},
 		),
@@ -55,17 +53,12 @@ func newContext() context.Context {
 }
 
 func NewWssServer(lc fx.Lifecycle, cfg config.Config) *wssServer.Server {
-	srv := wssServer.New(cfg)
+	srv := wssServer.New(cfg.WSS)
 
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
-			netListen, err := net.Listen("tcp", srv.GetPort())
-			if err != nil {
-				return fmt.Errorf("faile to create NewWssServer network con: %w", err)
-			}
-			log.Info(log.WithField("NewWssServer server at", srv.GetPort()))
 			go func() {
-				err = srv.Serve(netListen)
+				err := srv.Serve()
 				if err != nil {
 					log.Fatal(err)
 				}
@@ -84,17 +77,12 @@ func NewWssServer(lc fx.Lifecycle, cfg config.Config) *wssServer.Server {
 }
 
 func NewHTTPServer(lc fx.Lifecycle, cfg config.Config) *httpServer.Server {
-	srv := httpServer.New(cfg)
+	srv := httpServer.New(cfg.HTTP)
 
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
-			netListen, err := net.Listen("tcp", srv.GetPort())
-			if err != nil {
-				return fmt.Errorf("faile to create NewHTTPServer network con: %w", err)
-			}
-			log.Info(log.WithField("NewHttpServer server at", srv.GetPort()))
 			go func() {
-				err = srv.Serve(netListen)
+				err := srv.Serve()
 				if err != nil {
 					log.Fatal(err)
 				}
@@ -112,20 +100,15 @@ func NewHTTPServer(lc fx.Lifecycle, cfg config.Config) *httpServer.Server {
 	return srv
 }
 
-func NewHealthServer(lc fx.Lifecycle, cfg config.Config, http *httpServer.Server, wss *wssServer.Server) *healthServer.Server {
-	healthChecks := []func() error{http.HealthCheck, wss.HealthCheck}
+func NewHealthServer(lc fx.Lifecycle, cfg config.Config, http *httpServer.Server, wss *wssServer.Server) *statusServer.Server {
+	statusChecks := []func() error{http.Status, wss.Status}
 
-	srv := healthServer.New(cfg, healthChecks...)
+	srv := statusServer.New(cfg.STATUS, statusChecks...)
 
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
-			netListen, err := net.Listen("tcp", srv.GetPort())
-			if err != nil {
-				return fmt.Errorf("faile to create NewHealthServer network con: %w", err)
-			}
-			log.Info(log.WithField("NewHealthServer server at", srv.GetPort()))
 			go func() {
-				err = srv.Serve(netListen)
+				err := srv.Serve()
 				if err != nil {
 					log.Fatal(err)
 				}

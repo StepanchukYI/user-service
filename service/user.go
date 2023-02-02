@@ -36,39 +36,41 @@ func (s *userService) CreateUser(user *models.User) error {
 	}
 	user.Password = hashedPassword
 
-	return s.userRepo.Create(user)
+	return nil
+	//return s.userRepo.Create(user)
 }
 
 func (s *userService) GetUserByID(id uuid.UUID) (*models.User, error) {
-	user, err := s.userRepo.GetByID(id)
-	if err != nil {
-		return nil, err
-	}
+	//user, err := s.userRepo.GetByID(id)
+	//if err != nil {
+	//	return nil, err
+	//}
 
 	// Perform any necessary processing or manipulation on the returned user before returning it
-	return user, nil
+	return nil, nil
+	//return user, nil
 }
 
 func (s *userService) UpdateUser(user *models.User) error {
 	// Perform validation
-	if err := validateUsername(user.Email); err != nil {
+	if err := s.validator.ValidateUsername(user.Email); err != nil {
 		return err
 	}
-	if err := validatePassword(user.Password); err != nil {
+	if err := s.validator.ValidatePassword(user.Password); err != nil {
 		return err
 	}
 
 	// Hash the password
-	hashedPassword, err := HashPassword(user.Password)
+	hashedPassword, err := s.validator.HashPassword(user.Password)
 	if err != nil {
 		return err
 	}
 	user.Password = hashedPassword
 
-	return s.userRepo.Update(user)
+	return nil
+	//return s.userRepo.Update(user)
 }
 
 func (s *userService) DeleteUser(id uuid.UUID) error {
-	// Perform any necessary processing or validation before passing it to the repository
 	return s.userRepo.Delete(id)
 }
