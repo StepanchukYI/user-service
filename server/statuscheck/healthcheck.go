@@ -11,7 +11,7 @@ import (
 )
 
 type Config struct {
-	Port    int `mapstructure:"PORT"  default:"8081"`
+	Port    int `mapstructure:"PORT"  default:"8082"`
 	Timeout int `mapstructure:"TIMEOUT"  default:"60"`
 }
 
